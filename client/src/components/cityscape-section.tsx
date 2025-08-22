@@ -5,14 +5,29 @@ export default function CityscapeSection() {
   const [progress, setProgress] = useState(0);
   const [showSecretPanel, setShowSecretPanel] = useState(false);
 
-  const handleBuildingHover = (buildingNum: string) => {
-    // Check if this building contains a secret fragment
-    if (['1', '3', '5'].includes(buildingNum) && !discoveredFragments.includes(buildingNum)) {
+  const handleBuildingClick = (buildingNum: string) => {
+    // Step 1: Requires specific sequence - click buildings in order 1, 3, 5
+    const expectedSequence = ['1', '3', '5'];
+    const currentIndex = discoveredFragments.length;
+    
+    if (buildingNum === expectedSequence[currentIndex] && currentIndex < 3) {
       setDiscoveredFragments(prev => [...prev, buildingNum]);
       setProgress(prev => prev + 1);
       
-      // Show notification
-      showNotification(`Fragment ${discoveredFragments.length + 1} discovered!`);
+      // Step-specific notifications
+      if (currentIndex === 0) {
+        showNotification(`First clue found! Look for the next beacon...`);
+      } else if (currentIndex === 1) {
+        showNotification(`Second fragment acquired! One more remains...`);
+      } else if (currentIndex === 2) {
+        showNotification(`Final piece discovered! Check the terminal for assembly...`);
+      }
+    } else if (!expectedSequence.includes(buildingNum)) {
+      showNotification(`This building holds no secrets...`);
+    } else if (discoveredFragments.includes(buildingNum)) {
+      showNotification(`Already scanned this location.`);
+    } else {
+      showNotification(`Wrong sequence. Look for the starting point...`);
     }
   };
 
@@ -43,54 +58,70 @@ export default function CityscapeSection() {
       {/* City Buildings */}
       <div className="absolute bottom-0 w-full h-96 flex items-end justify-center space-x-2 px-4">
         
-        {/* Building 1 - Contains secret clue in HTML comment */}
-        {/* SECRET_FRAGMENT_1: N30N */}
+        {/* Building 1 - Start here: Look for the data-clue attribute */}
         <div 
-          className="building bg-gradient-to-t from-indigo-400/80 to-indigo-300/40 w-16 h-32" 
+          className="building bg-gradient-to-t from-indigo-400/80 to-indigo-300/40 w-16 h-32 cursor-pointer" 
           data-building="1"
+          data-clue="FIRST_BEACON"
           data-testid="building-1"
+          title="Click to scan for neural fragments"
           style={{clipPath: 'polygon(0% 100%, 0% 20%, 15% 0%, 85% 0%, 100% 20%, 100% 100%)'}}
-          onMouseEnter={() => handleBuildingHover('1')}
+          onClick={() => handleBuildingClick('1')}
         />
         
-        {/* Building 2 */}
+        {/* Building 2 - Decoy */}
         <div 
-          className="building bg-gradient-to-t from-purple-500/80 to-purple-400/40 w-20 h-40" 
+          className="building bg-gradient-to-t from-purple-500/80 to-purple-400/40 w-20 h-40 cursor-pointer" 
           data-building="2"
           data-testid="building-2"
+          title="Scanning... no neural activity detected"
           style={{clipPath: 'polygon(0% 100%, 0% 0%, 100% 0%, 100% 100%)'}}
-          onMouseEnter={() => handleBuildingHover('2')}
+          onClick={() => handleBuildingClick('2')}
         />
         
-        {/* Building 3 - Central tower with secret */}
-        {/* SECRET_FRAGMENT_2: _C1TY */}
+        {/* Building 3 - Central tower: Second in sequence, check console.log output */}
         <div 
-          className="building bg-gradient-to-t from-violet-600/80 to-violet-500/40 w-24 h-56 relative" 
+          className="building bg-gradient-to-t from-violet-600/80 to-violet-500/40 w-24 h-56 relative cursor-pointer" 
           data-building="3"
+          data-neural-core="CENTRAL_NEXUS"
           data-testid="building-3"
+          title="Central command tower - neural activity detected"
           style={{clipPath: 'polygon(0% 100%, 0% 10%, 20% 0%, 80% 0%, 100% 10%, 100% 100%)'}}
-          onMouseEnter={() => handleBuildingHover('3')}
+          onClick={() => {
+            console.log('NEURAL_FRAGMENT_2: _C1TY_CORE');
+            handleBuildingClick('3');
+          }}
         >
           <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-cyan-400 animate-pulse" data-testid="tower-beacon"></div>
         </div>
         
-        {/* Building 4 */}
+        {/* Building 4 - Decoy */}
         <div 
-          className="building bg-gradient-to-t from-blue-500/80 to-blue-400/40 w-18 h-36" 
+          className="building bg-gradient-to-t from-blue-500/80 to-blue-400/40 w-18 h-36 cursor-pointer" 
           data-building="4"
           data-testid="building-4"
+          title="Residential block - no fragments detected"
           style={{clipPath: 'polygon(0% 100%, 0% 30%, 30% 0%, 70% 0%, 100% 30%, 100% 100%)'}}
-          onMouseEnter={() => handleBuildingHover('4')}
+          onClick={() => handleBuildingClick('4')}
         />
         
-        {/* Building 5 - Final secret piece */}
-        {/* SECRET_FRAGMENT_3: _K3Y */}
+        {/* Building 5 - Final piece: Check network tab for hidden request */}
         <div 
-          className="building bg-gradient-to-t from-fuchsia-500/80 to-fuchsia-400/40 w-16 h-44" 
+          className="building bg-gradient-to-t from-fuchsia-500/80 to-fuchsia-400/40 w-16 h-44 cursor-pointer" 
           data-building="5"
+          data-final-key="ENCRYPTED"
           data-testid="building-5"
+          title="Data fortress - maximum security protocol"
           style={{clipPath: 'polygon(0% 100%, 0% 0%, 100% 0%, 100% 100%)'}}
-          onMouseEnter={() => handleBuildingHover('5')}
+          onClick={() => {
+            // Step 2: Hidden network request reveals final fragment
+            fetch('data:text/plain;base64,RklOQUxfRlJBR01FTlQ6IF9LM1k=')
+              .then(r => r.text())
+              .then(data => {
+                console.log('Decoded fragment:', atob(data.split(',')[1]));
+              });
+            handleBuildingClick('5');
+          }}
         />
       </div>
       
@@ -121,10 +152,11 @@ export default function CityscapeSection() {
           🔍 INVESTIGATION MODE
         </h3>
         <div className="font-courier text-sm text-gray-300 space-y-2">
-          <p>{'>'} Hover over the city buildings</p>
-          <p>{'>'} Inspect the source code</p>
-          <p>{'>'} Look for hidden fragments</p>
-          <p className="text-neon-green">{'>'} Progress: <span data-testid="progress-counter">{progress}/3</span></p>
+          <p>{'>'} STEP 1: Click buildings to scan for neural fragments</p>
+          <p>{'>'} STEP 2: Check browser dev tools (Console/Network)</p>
+          <p>{'>'} STEP 3: Decode and assemble in terminal</p>
+          <p className="text-neon-green">{'>'} Neural scans: <span data-testid="progress-counter">{progress}/3</span></p>
+          <p className="text-xs text-gray-500 mt-2">💡 Hint: Start with the shortest building</p>
         </div>
       </div>
     </section>

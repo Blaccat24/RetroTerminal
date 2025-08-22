@@ -32,7 +32,7 @@ export default function TerminalSection() {
     
     switch (cmd) {
       case 'help':
-        newHistory.push('Available commands: help, whoami, ls, cat, clear, matrix, hack, explore');
+        newHistory.push('Available commands: help, whoami, ls, cat, clear, matrix, hack, explore, decode, fragments');
         break;
       case 'whoami':
         newHistory.push('cyber_detective');
@@ -58,7 +58,23 @@ export default function TerminalSection() {
       case 'explore':
         newHistory.push('Scanning city grid for hidden fragments...');
         newHistory.push('Buildings detected: 5');
-        newHistory.push('Tip: Hover over buildings in explore section to discover secrets');
+        newHistory.push('Tip: Click buildings in correct sequence to discover secrets');
+        break;
+      case 'decode':
+        newHistory.push('Initiating neural fragment decoder...');
+        newHistory.push('Searching for collected fragments...');
+        newHistory.push('Fragment 1: FIRST_BEACON (from data-clue)');
+        newHistory.push('Fragment 2: _C1TY_CORE (from console log)');
+        newHistory.push('Fragment 3: _K3Y (from network request)');
+        newHistory.push('Assembling fragments: N30N + _C1TY + _K3Y = N30N_C1TY_K3Y');
+        newHistory.push('🔓 MASTER ACCESS GRANTED 🔓');
+        break;
+      case 'fragments':
+        newHistory.push('Neural fragment collection status:');
+        newHistory.push('• Building 1: data-clue="FIRST_BEACON"');
+        newHistory.push('• Building 3: console.log output');
+        newHistory.push('• Building 5: base64 network request');
+        newHistory.push('Use "decode" command to assemble fragments');
         break;
       case 'clear':
         setCommandHistory([]);
