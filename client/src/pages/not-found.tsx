@@ -24,14 +24,28 @@ export default function NotFound() {
             <p>in the digital grid matrix.</p>
           </div>
           
-          {/* Secret Hint */}
+          {/* Secret Discovery Guide */}
           <div className="border-l-2 border-neon-green pl-4 mb-4">
-            <div className="text-neon-green mb-2">HINT: Investigative Protocol</div>
-            <div className="text-gray-300 text-sm">
-              <p>• Check building source code for hidden fragments</p>
-              <p>• Look for HTML comments in cityscape elements</p>
-              <p>• Combine discovered fragments: N30N + _C1TY + _K3Y</p>
+            <div className="text-neon-green mb-2">INVESTIGATIVE PROTOCOL</div>
+            <div className="text-gray-300 text-sm space-y-1">
+              <p>• Step 1: Hover over buildings for visual clues</p>
+              <p>• Step 2: Inspect source code (Ctrl+U) for HTML comments</p>
+              <p>• Step 3: Check data attributes on building elements</p>
+              <p>• Step 4: Monitor browser console and network tabs</p>
+              <p>• Step 5: Follow hidden routes: /secret-nexus, /matrix-core</p>
+              <p className="text-yellow-400">Final Assembly: N30N + _C1TY + _K3Y</p>
             </div>
+          </div>
+
+          {/* ASCII Art Clue */}
+          <div className="border border-cyan-400 p-4 mb-4 bg-cyan-400/5">
+            <div className="text-cyan-400 mb-2 text-xs">ENCODED_DISCOVERY_MAP:</div>
+            <pre className="text-xs text-cyan-300" data-testid="discovery-map">
+{`01001000 01101111 01110110 01100101 01110010  -> HOVER
+01010011 01101111 01110101 01110010 01100011  -> SOURCE  
+01000011 01101111 01101110 01110011 01101111  -> CONSOLE
+01001110 01100101 01110100 01110111 01101111  -> NETWORK`}
+            </pre>
           </div>
           
           <div className="text-neon-green">root@neoncity:~$ <span className="terminal-cursor" data-testid="terminal-cursor"></span></div>

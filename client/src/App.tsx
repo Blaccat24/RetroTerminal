@@ -8,10 +8,15 @@ import NotFound from "@/pages/not-found";
 import CursorTrail from "@/components/cursor-trail";
 import MatrixBackground from "@/components/matrix-background";
 
+import SecretNexus from "@/pages/secret-nexus";
+import MatrixCore from "@/pages/matrix-core";
+
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/secret-nexus" component={SecretNexus} />
+      <Route path="/matrix-core" component={MatrixCore} />
       <Route component={NotFound} />
     </Switch>
   );

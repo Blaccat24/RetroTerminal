@@ -59,14 +59,22 @@ export default function CityscapeSection() {
       <div className="absolute bottom-0 w-full h-96 flex items-end justify-center space-x-2 px-4">
         
         {/* Building 1 - Start here: Look for the data-clue attribute */}
+        {/* SECRET_CLUE_1: Inspect this HTML comment. The path begins with N30N */}
         <div 
-          className="building bg-gradient-to-t from-indigo-400/80 to-indigo-300/40 w-16 h-32 cursor-pointer" 
+          className="building bg-gradient-to-t from-indigo-400/80 to-indigo-300/40 w-16 h-32 cursor-pointer hover:shadow-lg hover:shadow-cyan-400/50 transition-all duration-300" 
           data-building="1"
           data-clue="FIRST_BEACON"
+          data-fragment="N30N"
           data-testid="building-1"
-          title="Click to scan for neural fragments"
+          title="Click to scan for neural fragments - inspect source for clues"
           style={{clipPath: 'polygon(0% 100%, 0% 20%, 15% 0%, 85% 0%, 100% 20%, 100% 100%)'}}
           onClick={() => handleBuildingClick('1')}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-10px) scale(1.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0) scale(1)';
+          }}
         />
         
         {/* Building 2 - Decoy */}
@@ -80,16 +88,33 @@ export default function CityscapeSection() {
         />
         
         {/* Building 3 - Central tower: Second in sequence, check console.log output */}
+        {/* HIDDEN_PATH: /secret-nexus - Visit this route for additional clues */}
         <div 
-          className="building bg-gradient-to-t from-violet-600/80 to-violet-500/40 w-24 h-56 relative cursor-pointer" 
+          className="building bg-gradient-to-t from-violet-600/80 to-violet-500/40 w-24 h-56 relative cursor-pointer hover:shadow-lg hover:shadow-purple-400/50 transition-all duration-300" 
           data-building="3"
           data-neural-core="CENTRAL_NEXUS"
+          data-route="/secret-nexus"
           data-testid="building-3"
           title="Central command tower - neural activity detected"
           style={{clipPath: 'polygon(0% 100%, 0% 10%, 20% 0%, 80% 0%, 100% 10%, 100% 100%)'}}
           onClick={() => {
             console.log('NEURAL_FRAGMENT_2: _C1TY_CORE');
+            console.log('🔍 INVESTIGATOR TIP: Check data-route attribute for hidden path');
             handleBuildingClick('3');
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-10px) scale(1.05)';
+            // Show hidden ASCII overlay on hover
+            const overlay = document.createElement('div');
+            overlay.className = 'absolute inset-0 bg-black/80 flex items-center justify-center text-green-400 text-xs font-mono pointer-events-none';
+            overlay.innerHTML = '<pre>███<br/>█▓█<br/>███</pre>';
+            e.currentTarget.appendChild(overlay);
+            overlay.id = 'hover-overlay-3';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0) scale(1)';
+            const overlay = document.getElementById('hover-overlay-3');
+            if (overlay) overlay.remove();
           }}
         >
           <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-cyan-400 animate-pulse" data-testid="tower-beacon"></div>
@@ -106,10 +131,12 @@ export default function CityscapeSection() {
         />
         
         {/* Building 5 - Final piece: Check network tab for hidden request */}
+        {/* FINAL_SEQUENCE: The complete key assembles as N30N_C1TY_K3Y */}
         <div 
-          className="building bg-gradient-to-t from-fuchsia-500/80 to-fuchsia-400/40 w-16 h-44 cursor-pointer" 
+          className="building bg-gradient-to-t from-fuchsia-500/80 to-fuchsia-400/40 w-16 h-44 cursor-pointer hover:shadow-lg hover:shadow-pink-400/50 transition-all duration-300" 
           data-building="5"
           data-final-key="ENCRYPTED"
+          data-unlock="K3Y"
           data-testid="building-5"
           title="Data fortress - maximum security protocol"
           style={{clipPath: 'polygon(0% 100%, 0% 0%, 100% 0%, 100% 100%)'}}
@@ -119,8 +146,27 @@ export default function CityscapeSection() {
               .then(r => r.text())
               .then(data => {
                 console.log('Decoded fragment:', atob(data.split(',')[1]));
+                console.log('🎯 SECRET ROUTE UNLOCKED: /matrix-core');
               });
             handleBuildingClick('5');
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-10px) scale(1.05)';
+            // Matrix rain effect on hover
+            const overlay = document.createElement('div');
+            overlay.className = 'absolute inset-0 bg-black/80 overflow-hidden pointer-events-none';
+            overlay.innerHTML = `
+              <div class="text-green-400 text-xs font-mono animate-matrix absolute" style="left: 20%; animation-delay: 0s;">1</div>
+              <div class="text-green-400 text-xs font-mono animate-matrix absolute" style="left: 50%; animation-delay: 0.5s;">0</div>
+              <div class="text-green-400 text-xs font-mono animate-matrix absolute" style="left: 80%; animation-delay: 1s;">1</div>
+            `;
+            e.currentTarget.appendChild(overlay);
+            overlay.id = 'hover-overlay-5';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0) scale(1)';
+            const overlay = document.getElementById('hover-overlay-5');
+            if (overlay) overlay.remove();
           }}
         />
       </div>
