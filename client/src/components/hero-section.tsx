@@ -11,6 +11,13 @@ export default function HeroSection() {
     'CYBERPUNK PROTOCOLS LOADED... READY FOR EXPLORATION...'
   ];
 
+  const enterMatrix = () => {
+    const exploreSection = document.getElementById('explore');
+    if (exploreSection) {
+      exploreSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   useEffect(() => {
     const message = messages[messageIndex];
     let charIndex = 0;
@@ -67,7 +74,11 @@ export default function HeroSection() {
      ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝     ╚═════╝╚═╝   ╚═╝      ╚═╝`}
         </pre>
         
-        <button className="neon-border bg-black/50 px-8 py-4 text-neon-cyan font-bold hover:bg-neon-cyan hover:text-black transition-all duration-300" data-testid="enter-matrix-button">
+        <button 
+          className="neon-border bg-black/50 px-8 py-4 text-neon-cyan font-bold hover:bg-neon-cyan hover:text-black transition-all duration-300" 
+          data-testid="enter-matrix-button"
+          onClick={enterMatrix}
+        >
           {'>'} ENTER THE MATRIX
         </button>
       </div>
