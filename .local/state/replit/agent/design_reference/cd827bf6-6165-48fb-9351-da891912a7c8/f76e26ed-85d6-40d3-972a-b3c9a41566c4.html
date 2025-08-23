@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEON_CITY.EXE - Terminal Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'cyber-purple': '#8B00FF',
+            'neon-cyan': '#00FFFF',
+            'electric-magenta': '#FF00FF',
+            'neon-green': '#39FF14',
+            'electric-blue': '#0080FF',
+            'deep-purple': '#1a0033',
+            'dark-purple': '#330066'
+          },
+          fontFamily: {
+            'orbitron': ['Orbitron', 'sans-serif'],
+            'courier': ['Courier Prime', 'monospace']
+          },
+          animation: {
+            'glitch': 'glitch 2s infinite',
+            'neon-pulse': 'neon-pulse 2s ease-in-out infinite alternate',
+            'scanline': 'scanline 4s linear infinite',
+            'typing': 'typing 3.5s steps(40, end)',
+            'matrix': 'matrix 10s linear infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'glow': 'glow 2s ease-in-out infinite alternate'
+          }
+        }
+      }
+    };
+    </script>
+    <style>
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+        
+        @keyframes neon-pulse {
+            from { text-shadow: 0 0 5px #00FFFF, 0 0 10px #00FFFF, 0 0 15px #00FFFF; }
+            to { text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF; }
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100vw); }
+        }
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes matrix {
+            0% { transform: translateY(-100vh); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 5px #FF00FF, inset 0 0 5px #FF00FF; }
+            to { box-shadow: 0 0 20px #FF00FF, inset 0 0 10px #FF00FF; }
+        }
+        
+        .terminal-cursor::after {
+            content: '_';
+            animation: blink 1s infinite;
+            color: #00FFFF;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .matrix-char {
+            position: absolute;
+            color: #39FF14;
+            font-family: 'Courier Prime', monospace;
+            font-size: 14px;
+            animation: matrix 10s linear infinite;
+            opacity: 0.3;
+        }
+        
+        .building {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .building:hover {
+            transform: translateY(-5px);
+            filter: drop-shadow(0 10px 20px rgba(0, 255, 255, 0.5));
+        }
+        
+        .secret-panel {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .secret-panel.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .neon-border {
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #00FFFF, #FF00FF) 1;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        .grid-overlay {
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        .scanlines {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .scanlines::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00FFFF, transparent);
+            animation: scanline 4s linear infinite;
+            z-index: 10;
+        }
+
+        .custom-cursor {
+            cursor: none;
+        }
+        
+        .cursor-trail {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #00FFFF 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: screen;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-deep-purple via-dark-purple to-deep-purple text-white font-orbitron overflow-x-hidden custom-cursor">
+    
+    <!-- Custom Cursor Trail -->
+    <div class="cursor-trail" id="cursorTrail"></div>
+    
+    <!-- Matrix Background -->
+    <div class="matrix-bg" id="matrixBg"></div>
+    
+    <!-- Header Section -->
+    <header class="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-sm border-b border-neon-cyan/30">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <div class="w-8 h-8 border-2 border-neon-cyan animate-spin"></div>
+                <span class="text-xl font-bold text-neon-cyan animate-neon-pulse">NEON_CITY.EXE</span>
+            </div>
+            <div class="hidden md:flex space-x-8 font-courier">
+                <a href="#home" class="hover:text-neon-cyan transition-colors">./HOME</a>
+                <a href="#about" class="hover:text-electric-magenta transition-colors">./ABOUT</a>
+                <a href="#explore" class="hover:text-neon-green transition-colors">./EXPLORE</a>
+                <a href="#terminal" class="hover:text-cyber-purple transition-colors">./TERMINAL</a>
+            </div>
+            <div class="text-xs font-courier text-neon-green">
+                <span class="terminal-cursor">CONNECTED</span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative scanlines grid-overlay">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/50"></div>
+        
+        <!-- Floating Geometric Shapes -->
+        <div class="absolute top-20 left-10 w-16 h-16 border-2 border-electric-magenta animate-float opacity-30"></div>
+        <div class="absolute top-40 right-20 w-12 h-12 border-2 border-neon-green rotate-45 animate-float opacity-40" style="animation-delay: 1s;"></div>
+        <div class="absolute bottom-40 left-20 w-20 h-20 border-2 border-neon-cyan rounded-full animate-float opacity-25" style="animation-delay: 2s;"></div>
+        
+        <div class="text-center z-10 max-w-4xl px-6">
+            <h1 class="text-6xl md:text-8xl font-black mb-6 animate-glitch">
+                <span class="bg-gradient-to-r from-neon-cyan via-electric-magenta to-cyber-purple bg-clip-text text-transparent">
+                    WELCOME TO
+                </span>
+            </h1>
+            <h2 class="text-4xl md:text-6xl font-bold text-neon-cyan animate-neon-pulse mb-8">
+                THE NEON GRID
+            </h2>
+            <div class="font-courier text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+                <div class="typing-text">
+                    <span class="terminal-cursor">SYSTEM INITIALIZED... ACCESSING CYBERSPACE...</span>
+                </div>
+            </div>
+            
+            <!-- ASCII Art -->
+            <pre class="font-courier text-xs text-neon-green mb-8 opacity-70 hidden md:block">
+    ██████╗██╗   ██╗██████╗ ███████╗██████╗      ██████╗██╗████████╗██╗   ██╗
+    ██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗    ██╔════╝██║╚══██╔══╝╚██╗ ██╔╝
+    ██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝    ██║     ██║   ██║    ╚████╔╝ 
+    ██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗    ██║     ██║   ██║     ╚██╔╝  
+    ╚██████╗   ██║   ██████╔╝███████╗██║  ██║    ╚██████╗██║   ██║      ██║   
+     ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝     ╚═════╝╚═╝   ╚═╝      ╚═╝   
+            </pre>
+            
+            <button class="neon-border bg-black/50 px-8 py-4 text-neon-cyan font-bold hover:bg-neon-cyan hover:text-black transition-all duration-300">
+                > ENTER THE MATRIX
+            </button>
+        </div>
+    </section>
+
+    <!-- Cityscape Section -->
+    <section id="explore" class="min-h-screen relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-deep-purple via-dark-purple to-black"></div>
+        
+        <!-- Grid Background -->
+        <div class="absolute inset-0 grid-overlay opacity-30"></div>
+        
+        <!-- City Buildings -->
+        <div class="absolute bottom-0 w-full h-96 flex items-end justify-center space-x-2 px-4">
+            
+            <!-- Building 1 - Contains secret clue in HTML comment -->
+            <!-- SECRET_FRAGMENT_1: N30N -->
+            <div class="building bg-gradient-to-t from-neon-cyan/80 to-neon-cyan/40 w-16 h-32" 
+                 data-building="1" 
+                 style="clip-path: polygon(0% 100%, 0% 20%, 15% 0%, 85% 0%, 100% 20%, 100% 100%);">
+            </div>
+            
+            <!-- Building 2 -->
+            <div class="building bg-gradient-to-t from-electric-magenta/80 to-electric-magenta/40 w-20 h-40" 
+                 data-building="2"
+                 style="clip-path: polygon(0% 100%, 0% 0%, 100% 0%, 100% 100%);">
+            </div>
+            
+            <!-- Building 3 - Central tower with secret -->
+            <!-- SECRET_FRAGMENT_2: _C1TY -->
+            <div class="building bg-gradient-to-t from-cyber-purple/80 to-cyber-purple/40 w-24 h-56" 
+                 data-building="3"
+                 style="clip-path: polygon(0% 100%, 0% 10%, 20% 0%, 80% 0%, 100% 10%, 100% 100%);">
+                <div class="absolute top-4 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-neon-green animate-pulse"></div>
+            </div>
+            
+            <!-- Building 4 -->
+            <div class="building bg-gradient-to-t from-neon-green/80 to-neon-green/40 w-18 h-36" 
+                 data-building="4"
+                 style="clip-path: polygon(0% 100%, 0% 30%, 30% 0%, 70% 0%, 100% 30%, 100% 100%);">
+            </div>
+            
+            <!-- Building 5 - Final secret piece -->
+            <!-- SECRET_FRAGMENT_3: _K3Y -->
+            <div class="building bg-gradient-to-t from-electric-blue/80 to-electric-blue/40 w-16 h-44" 
+                 data-building="5"
+                 style="clip-path: polygon(0% 100%, 0% 0%, 100% 0%, 100% 100%);">
+            </div>
+            
+        </div>
+        
+        <!-- Secret Panel (Hidden initially) -->
+        <div id="secretPanel" class="secret-panel absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/90 neon-border p-8 rounded-lg">
+            <div class="font-courier text-center">
+                <div class="text-neon-cyan mb-4">
+                    <i class="fas fa-unlock text-2xl mb-2"></i>
+                    <p>ACCESS GRANTED</p>
+                </div>
+                <div class="text-neon-green mb-4">
+                    <p>SECRET KEY DISCOVERED:</p>
+                    <p class="text-xl font-bold" id="secretKey">N30N_C1TY_K3Y</p>
+                </div>
+                <div class="text-gray-400 text-sm">
+                    <p>CONGRATULATIONS, CYBER DETECTIVE</p>
+                    <p>You've unlocked the hidden protocol</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Instruction Panel -->
+        <div class="absolute top-10 left-10 bg-black/70 neon-border p-6 rounded-lg max-w-sm">
+            <h3 class="text-neon-cyan font-bold mb-3">
+                <i class="fas fa-search mr-2"></i>INVESTIGATION MODE
+            </h3>
+            <div class="font-courier text-sm text-gray-300 space-y-2">
+                <p>> Hover over the city buildings</p>
+                <p>> Inspect the source code</p>
+                <p>> Look for hidden fragments</p>
+                <p class="text-neon-green">> Progress: <span id="progress">0/3</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terminal Section -->
+    <section id="terminal" class="min-h-screen flex items-center justify-center bg-black relative">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-black neon-border rounded-lg overflow-hidden">
+                    <div class="bg-gradient-to-r from-dark-purple to-cyber-purple p-4 flex items-center space-x-4">
+                        <div class="flex space-x-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <div class="font-courier text-sm text-neon-cyan">NEON_TERMINAL.EXE</div>
+                    </div>
+                    
+                    <div class="p-6 font-courier text-sm min-h-96">
+                        <div class="space-y-2" id="terminalContent">
+                            <div class="text-neon-green">root@neoncity:~$ whoami</div>
+                            <div class="text-gray-300">cyber_detective</div>
+                            <div class="text-neon-green">root@neoncity:~$ ls -la /secrets/</div>
+                            <div class="text-gray-300">total 3</div>
+                            <div class="text-gray-300">-rw-r--r-- 1 root root 42 Nov 15 23:59 fragment_01.txt</div>
+                            <div class="text-gray-300">-rw-r--r-- 1 root root 42 Nov 15 23:59 fragment_02.txt</div>
+                            <div class="text-gray-300">-rw-r--r-- 1 root root 42 Nov 15 23:59 fragment_03.txt</div>
+                            <div class="text-neon-green">root@neoncity:~$ cat /secrets/*.txt</div>
+                            <div class="text-neon-cyan">Fragment 1: Found in Building #1 source code</div>
+                            <div class="text-electric-magenta">Fragment 2: Discovered in Central Tower</div>
+                            <div class="text-cyber-purple">Fragment 3: Located in Building #5 comments</div>
+                            <div class="text-neon-green">root@neoncity:~$ combine_fragments</div>
+                            <div class="text-neon-cyan animate-neon-pulse">ASSEMBLING SECRET KEY...</div>
+                            <div class="text-white mt-4 p-4 bg-dark-purple/50 border border-neon-cyan">
+                                <div class="text-center">
+                                    <div class="text-lg">🔑 MASTER KEY REVEALED 🔑</div>
+                                    <div class="text-2xl font-bold text-neon-cyan mt-2">N30N_C1TY_K3Y</div>
+                                    <div class="text-sm mt-2 text-gray-400">Access Level: CYBERPUNK_MASTER</div>
+                                </div>
+                            </div>
+                            <div class="text-neon-green mt-4">root@neoncity:~$ <span class="terminal-cursor"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="min-h-screen flex items-center justify-center relative scanlines">
+        <div class="absolute inset-0 bg-gradient-to-br from-dark-purple/50 via-black/70 to-deep-purple/50"></div>
+        
+        <div class="container mx-auto px-6 z-10">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl font-bold mb-6 text-neon-cyan animate-neon-pulse">
+                        ABOUT THE GRID
+                    </h2>
+                    <div class="font-courier text-gray-300 space-y-4">
+                        <p>Welcome to the Neon City Grid, where cyberpunk aesthetics meet interactive mystery solving.</p>
+                        <p class="text-neon-green">This digital realm combines:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li class="text-electric-magenta">Retro terminal interfaces</li>
+                            <li class="text-neon-cyan">Hidden secret discovery systems</li>
+                            <li class="text-cyber-purple">Interactive cityscape exploration</li>
+                            <li class="text-neon-green">1990s hacker culture aesthetics</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="neon-border bg-black/50 p-4 text-center animate-glow">
+                            <div class="text-2xl text-neon-cyan mb-2">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="font-courier text-sm">SOURCE CODE<br>INSPECTION</div>
+                        </div>
+                        <div class="neon-border bg-black/50 p-4 text-center animate-glow" style="animation-delay: 0.5s;">
+                            <div class="text-2xl text-electric-magenta mb-2">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="font-courier text-sm">HIDDEN<br>ELEMENTS</div>
+                        </div>
+                        <div class="neon-border bg-black/50 p-4 text-center animate-glow" style="animation-delay: 1s;">
+                            <div class="text-2xl text-cyber-purple mb-2">
+                                <i class="fas fa-puzzle-piece"></i>
+                            </div>
+                            <div class="font-courier text-sm">PUZZLE<br>SOLVING</div>
+                        </div>
+                        <div class="neon-border bg-black/50 p-4 text-center animate-glow" style="animation-delay: 1.5s;">
+                            <div class="text-2xl text-neon-green mb-2">
+                                <i class="fas fa-unlock"></i>
+                            </div>
+                            <div class="font-courier text-sm">SECRET<br>UNLOCKING</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-neon-cyan/30 py-8">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="font-courier text-sm text-gray-400 mb-4 md:mb-0">
+                    © 2024 NEON_CITY.EXE | All Rights Reserved
+                </div>
+                <div class="flex space-x-6 text-sm">
+                    <a href="#" class="text-neon-cyan hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="text-electric-magenta hover:text-white transition-colors">Terms of Service</a>
+                    <a href="#404" class="text-neon-green hover:text-white transition-colors">404 Terminal</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // TODO: Implement business logic, API calls, or state management
+        
+        (function() {
+            // Matrix background effect
+            function createMatrixRain() {
+                const matrixBg = document.getElementById('matrixBg');
+                const chars = '01ア日本語カタカナひらがな♠♣♥♦※卍';
+                
+                for (let i = 0; i < 50; i++) {
+                    const char = document.createElement('div');
+                    char.className = 'matrix-char';
+                    char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                    char.style.left = Math.random() * 100 + '%';
+                    char.style.animationDelay = Math.random() * 10 + 's';
+                    char.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                    matrixBg.appendChild(char);
+                }
+            }
+            
+            // Custom cursor trail effect
+            function initCursorTrail() {
+                const trail = document.getElementById('cursorTrail');
+                
+                document.addEventListener('mousemove', (e) => {
+                    trail.style.left = e.clientX - 10 + 'px';
+                    trail.style.top = e.clientY - 10 + 'px';
+                });
+            }
+            
+            // Secret key discovery system
+            let discoveredFragments = [];
+            let progress = 0;
+            
+            function checkSecretProgress() {
+                const progressElement = document.getElementById('progress');
+                progressElement.textContent = `${progress}/3`;
+                
+                if (progress === 3) {
+                    document.getElementById('secretPanel').classList.add('revealed');
+                }
+            }
+            
+            function initSecretSystem() {
+                const buildings = document.querySelectorAll('.building');
+                
+                buildings.forEach((building, index) => {
+                    building.addEventListener('mouseenter', () => {
+                        const buildingNum = building.getAttribute('data-building');
+                        
+                        // Check if this building contains a secret fragment in HTML comments
+                        if (['1', '3', '5'].includes(buildingNum) && !discoveredFragments.includes(buildingNum)) {
+                            discoveredFragments.push(buildingNum);
+                            progress++;
+                            building.style.filter = 'drop-shadow(0 0 20px rgba(57, 255, 20, 0.8))';
+                            checkSecretProgress();
+                            
+                            // Show temporary notification
+                            showNotification(`Fragment ${discoveredFragments.length} discovered!`);
+                        }
+                    });
+                });
+            }
+            
+            function showNotification(message) {
+                const notification = document.createElement('div');
+                notification.className = 'fixed top-20 right-4 bg-neon-green text-black px-4 py-2 rounded font-courier text-sm z-50';
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+            
+            // Smooth scrolling for navigation
+            function initSmoothScrolling() {
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
+                });
+            }
+            
+            // Typing animation effect
+            function initTypingEffect() {
+                const typingText = document.querySelector('.typing-text span');
+                const messages = [
+                    'SYSTEM INITIALIZED... ACCESSING CYBERSPACE...',
+                    'CONNECTION ESTABLISHED... WELCOME TO THE GRID...',
+                    'NEURAL INTERFACE ACTIVE... PREPARE FOR IMMERSION...',
+                    'CYBERPUNK PROTOCOLS LOADED... READY FOR EXPLORATION...'
+                ];
+                
+                let currentMessageIndex = 0;
+                
+                function typeMessage(message, callback) {
+                    typingText.textContent = '';
+                    let i = 0;
+                    const interval = setInterval(() => {
+                        typingText.textContent += message[i];
+                        i++;
+                        if (i >= message.length) {
+                            clearInterval(interval);
+                            setTimeout(callback, 2000);
+                        }
+                    }, 50);
+                }
+                
+                function cycleMessages() {
+                    typeMessage(messages[currentMessageIndex], () => {
+                        currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+                        cycleMessages();
+                    });
+                }
+                
+                cycleMessages();
+            }
+            
+            // Custom 404 page handler
+            function init404Handler() {
+                if (window.location.hash === '#404') {
+                    document.body.innerHTML = `
+                        <div class="min-h-screen flex items-center justify-center bg-black">
+                            <div class="text-center font-courier">
+                                <div class="text-6xl text-red-500 mb-4">404</div>
+                                <div class="text-2xl text-neon-cyan mb-4">SYSTEM ERROR</div>
+                                <div class="text-gray-400 mb-8">
+                                    <p>The requested neural pathway could not be found</p>
+                                    <p>in the cybernet database.</p>
+                                </div>
+                                <div class="text-neon-green mb-4">
+                                    <p>HINT: Check building source code for hidden fragments</p>
+                                </div>
+                                <button onclick="history.back()" class="neon-border bg-black px-6 py-3 text-neon-cyan hover:bg-neon-cyan hover:text-black transition-all">
+                                    > RETURN TO GRID
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Initialize all systems
+            document.addEventListener('DOMContentLoaded', () => {
+                createMatrixRain();
+                initCursorTrail();
+                initSecretSystem();
+                initSmoothScrolling();
+                initTypingEffect();
+                init404Handler();
+            });
+        })();
+    </script>
+</body>
+</html>

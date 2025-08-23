@@ -1,0 +1,514 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBER_TERMINAL.exe - Access Granted</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'cyber-green': '#00FF41',
+                    'cyber-blue': '#00D4FF',
+                    'cyber-magenta': '#FF007F',
+                    'cyber-purple': '#7B00FF',
+                    'terminal-bg': '#0A0A0A',
+                    'terminal-dark': '#000000'
+                },
+                fontFamily: {
+                    'mono': ['Source Code Pro', 'Courier New', 'monospace']
+                },
+                animation: {
+                    'glitch': 'glitch 0.3s ease-in-out infinite alternate',
+                    'typing': 'typing 3.5s steps(40, end)',
+                    'blink-caret': 'blink-caret 1s infinite step-end',
+                    'scanline': 'scanline 2s linear infinite',
+                    'matrix': 'matrix 20s linear infinite'
+                }
+            }
+        }
+    };
+    </script>
+    <style>
+        @keyframes glitch {
+            0% {
+                text-shadow: 0.05em 0 0 #00FF41, -0.05em -0.025em 0 #FF007F, 0.025em 0.05em 0 #00D4FF;
+            }
+            15% {
+                text-shadow: 0.05em 0 0 #00FF41, -0.05em -0.025em 0 #FF007F, 0.025em 0.05em 0 #00D4FF;
+            }
+            16% {
+                text-shadow: -0.05em -0.025em 0 #00FF41, 0.025em 0.025em 0 #FF007F, -0.05em -0.05em 0 #00D4FF;
+            }
+            49% {
+                text-shadow: -0.05em -0.025em 0 #00FF41, 0.025em 0.025em 0 #FF007F, -0.05em -0.05em 0 #00D4FF;
+            }
+            50% {
+                text-shadow: 0.025em 0.05em 0 #00FF41, 0.05em 0 0 #FF007F, 0 -0.05em 0 #00D4FF;
+            }
+            99% {
+                text-shadow: 0.025em 0.05em 0 #00FF41, 0.05em 0 0 #FF007F, 0 -0.05em 0 #00D4FF;
+            }
+            100% {
+                text-shadow: -0.025em 0 0 #00FF41, -0.025em -0.025em 0 #FF007F, -0.025em -0.05em 0 #00D4FF;
+            }
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #00FF41 }
+        }
+
+        @keyframes scanline {
+            0% { top: -50px; }
+            100% { top: 100vh; }
+        }
+
+        @keyframes matrix {
+            0% { transform: translateY(-100vh); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .scanlines::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(transparent 50%, rgba(0, 255, 65, 0.03) 50%);
+            background-size: 100% 4px;
+            animation: scanline 0.1s linear infinite;
+            pointer-events: none;
+        }
+
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .matrix-char {
+            position: absolute;
+            color: #00FF41;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 14px;
+            animation: matrix 20s linear infinite;
+            opacity: 0.7;
+        }
+
+        .glitch-hover:hover {
+            animation: glitch 0.3s ease-in-out infinite alternate;
+        }
+
+        .typing-effect {
+            overflow: hidden;
+            border-right: 2px solid #00FF41;
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret 1s infinite step-end;
+        }
+
+        .secret-clue {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .secret-trigger:hover .secret-clue {
+            opacity: 1;
+        }
+
+        .ascii-border {
+            border: 2px solid #00FF41;
+            position: relative;
+        }
+
+        .ascii-border::before {
+            content: '┌─────────────────────────────────────────┐';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            color: #00FF41;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 12px;
+        }
+
+        .ascii-border::after {
+            content: '└─────────────────────────────────────────┘';
+            position: absolute;
+            bottom: -2px;
+            left: -2px;
+            color: #00FF41;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 12px;
+        }
+
+        .terminal-cursor::after {
+            content: '█';
+            animation: blink-caret 1s infinite step-end;
+            color: #00FF41;
+        }
+    </style>
+</head>
+<body class="bg-terminal-dark text-cyber-green font-mono overflow-x-hidden relative">
+    <!-- Matrix Rain Background -->
+    <div class="matrix-rain" id="matrixRain"></div>
+    
+    <!-- Scanlines Effect -->
+    <div class="scanlines fixed inset-0 pointer-events-none z-10"></div>
+    
+    <!-- Main Container -->
+    <div class="relative z-20 min-h-screen">
+        <!-- Header Terminal -->
+        <header class="border-b-2 border-cyber-green p-4">
+            <div class="max-w-6xl mx-auto">
+                <div class="ascii-border bg-terminal-bg p-4 mb-4">
+                    <pre class="text-cyber-green text-sm">
+╔═══════════════════════════════════════════════════════════════════╗
+║  CYBER_TERMINAL.exe v2.1.45 - AUTHENTICATED SESSION              ║
+║  Copyright (c) 1995 NEXUS CORP - All Rights Reserved             ║
+║  Connection: SECURE_LINK_7734 | Status: ACTIVE | Uptime: 87:23:14║
+╚═══════════════════════════════════════════════════════════════════╝
+                    </pre>
+                </div>
+                
+                <!-- Navigation Terminal -->
+                <nav class="bg-terminal-bg border border-cyber-green p-3">
+                    <div class="flex flex-wrap gap-4 text-sm">
+                        <span class="text-cyber-blue">[USER@NEXUS]$</span>
+                        <button class="glitch-hover hover:text-cyber-magenta transition-colors">./home.exe</button>
+                        <button class="glitch-hover hover:text-cyber-magenta transition-colors">./projects.exe</button>
+                        <button class="glitch-hover hover:text-cyber-magenta transition-colors">./contact.exe</button>
+                        <button class="glitch-hover hover:text-cyber-purple transition-colors secret-trigger">
+                            ./hidden.exe
+                            <span class="secret-clue text-cyber-magenta ml-2"><!-- FIRST_CLUE: Check source line 247 --></span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="max-w-6xl mx-auto p-4 space-y-8">
+            <!-- Welcome Section -->
+            <section class="bg-terminal-bg border border-cyber-green p-6">
+                <div class="mb-4">
+                    <h1 class="text-2xl md:text-4xl font-bold mb-2 glitch-hover">
+                        <span class="text-cyber-green">WELCOME TO THE</span>
+                        <span class="text-cyber-magenta"> NEXUS</span>
+                    </h1>
+                    <div class="typing-effect text-cyber-blue text-lg">
+                        > Initializing cybernetic interface protocol...
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6 mt-8">
+                    <div>
+                        <pre class="text-cyber-green text-xs leading-tight">
+    ████▄     ▄   ▄███▄   ▀▄    ▄ ▄   ▄   ▄▄▄▄▄   
+    █   █      █  █▀   ▀    █  █   █   █  █     ▀▄ 
+    █   █ █     █ ██▄▄       ███    █ ▄ █ ▄  ▀▀▀▀▄   
+    ▀████  █    █ █▄   ▄▀    █  █   █   █  ▀▄▄▄▄▀    
+            █  █  ▀███▀     █    █   █   █           
+             █▐                  █   █  █            
+             ▐                    ▀▄▄ █▐             
+                                     ▀ ▐             
+                        </pre>
+                    </div>
+                    <div class="space-y-4">
+                        <p class="text-cyber-blue">
+                            <span class="text-cyber-purple">STATUS:</span> CONNECTED TO MAINFRAME<br>
+                            <span class="text-cyber-purple">ACCESS LEVEL:</span> RESTRICTED<br>
+                            <span class="text-cyber-purple">LOCATION:</span> CLASSIFIED<br>
+                            <span class="text-cyber-purple">TIMESTAMP:</span> <span id="currentTime"></span>
+                        </p>
+                        <div class="text-cyber-green">
+                            > You have entered a secure digital environment<br>
+                            > Proceed with caution, agent<br>
+                            > Some secrets require... investigation
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Terminal Window -->
+            <section class="bg-terminal-bg border border-cyber-blue p-6">
+                <h2 class="text-xl font-bold text-cyber-blue mb-4 glitch-hover">
+                    > ACTIVE_PROJECTS.DIR
+                </h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="border border-cyber-green p-4 hover:border-cyber-magenta transition-colors group">
+                        <h3 class="text-cyber-green font-bold group-hover:text-cyber-magenta">NEURAL_NET.exe</h3>
+                        <p class="text-xs text-cyber-blue mt-2">
+                            Advanced AI classification system utilizing quantum processing cores
+                        </p>
+                        <div class="mt-3 text-xs">
+                            <span class="text-cyber-purple">STATUS:</span> 
+                            <span class="text-cyber-green">ACTIVE</span>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-cyber-green p-4 hover:border-cyber-magenta transition-colors group">
+                        <h3 class="text-cyber-green font-bold group-hover:text-cyber-magenta">CRYPTO_VAULT.exe</h3>
+                        <p class="text-xs text-cyber-blue mt-2">
+                            Encrypted data storage with biometric authentication protocols
+                        </p>
+                        <div class="mt-3 text-xs">
+                            <span class="text-cyber-purple">STATUS:</span> 
+                            <span class="text-cyber-green">SECURED</span>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-cyber-green p-4 hover:border-cyber-magenta transition-colors group secret-trigger">
+                        <h3 class="text-cyber-green font-bold group-hover:text-cyber-magenta">GHOST_PROTOCOL.exe</h3>
+                        <p class="text-xs text-cyber-blue mt-2">
+                            [CLASSIFIED] - Access level insufficient
+                        </p>
+                        <div class="mt-3 text-xs">
+                            <span class="text-cyber-purple">STATUS:</span> 
+                            <span class="text-cyber-red secret-clue">REQUIRES_KEY: hover_to_reveal</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Console Interface -->
+            <section class="bg-terminal-bg border border-cyber-purple p-6">
+                <h2 class="text-xl font-bold text-cyber-purple mb-4">
+                    > CONSOLE.INTERFACE
+                </h2>
+                <div class="bg-black p-4 border border-cyber-green font-mono text-sm">
+                    <div class="text-cyber-green mb-2">NEXUS_TERMINAL v2.1.45</div>
+                    <div class="text-cyber-blue mb-2">Last login: Wed Dec 13 23:42:17 1995</div>
+                    <div class="space-y-1">
+                        <div><span class="text-cyber-purple">user@nexus:~$</span> ls -la</div>
+                        <div class="text-cyber-green text-xs">
+                            drwxr-xr-x 12 user user 4096 Dec 13 23:45 .<br>
+                            drwxr-xr-x  3 root root 4096 Dec 13 22:30 ..<br>
+                            -rwx------ 1 user user  256 Dec 13 23:42 .secret_key<br>
+                            -rw-r--r-- 1 user user 1337 Dec 13 23:40 projects.txt<br>
+                            -rwxr-xr-x 1 user user 2048 Dec 13 23:35 neural_net.exe
+                        </div>
+                        <div><span class="text-cyber-purple">user@nexus:~$</span> cat .secret_key</div>
+                        <div class="text-cyber-magenta text-xs">
+                            Permission denied. Try alternative access method.<br>
+                            <!-- SECOND_CLUE: The key lies in the void between worlds -->
+                        </div>
+                        <div><span class="text-cyber-purple">user@nexus:~$</span> <span class="terminal-cursor"></span></div>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-cyber-blue">
+                    > Interactive terminal simulation - Type commands to explore
+                </div>
+            </section>
+
+            <!-- System Status -->
+            <section class="bg-terminal-bg border border-cyber-magenta p-6">
+                <h2 class="text-xl font-bold text-cyber-magenta mb-4 glitch-hover">
+                    > SYSTEM_STATUS.LOG
+                </h2>
+                <div class="grid md:grid-cols-3 gap-4 text-sm">
+                    <div>
+                        <div class="text-cyber-purple font-bold mb-2">MEMORY USAGE</div>
+                        <div class="bg-black p-2 border border-cyber-green">
+                            <div class="text-cyber-green">RAM: 87.3% [████████▓░]</div>
+                            <div class="text-cyber-blue">SWAP: 12.1% [█▓░░░░░░░░]</div>
+                            <div class="text-cyber-magenta">CACHE: 94.7% [█████████▓]</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-cyber-purple font-bold mb-2">NETWORK STATUS</div>
+                        <div class="bg-black p-2 border border-cyber-green">
+                            <div class="text-cyber-green">UPLINK: STABLE</div>
+                            <div class="text-cyber-blue">LATENCY: 12ms</div>
+                            <div class="text-cyber-magenta">BANDWIDTH: 1.21 GB/s</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-cyber-purple font-bold mb-2">SECURITY LEVEL</div>
+                        <div class="bg-black p-2 border border-cyber-green">
+                            <div class="text-cyber-green">ENCRYPTION: AES-256</div>
+                            <div class="text-cyber-blue">FIREWALL: ACTIVE</div>
+                            <div class="text-cyber-magenta">INTRUSION: NONE</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="border-t-2 border-cyber-green p-4 mt-12">
+            <div class="max-w-6xl mx-auto text-center">
+                <div class="ascii-border bg-terminal-bg p-4">
+                    <pre class="text-cyber-green text-xs">
+╔════════════════════════════════════════════════════════════════════╗
+║  CONNECTION ESTABLISHED - NEXUS CORP SECURE TERMINAL              ║
+║  © 1995 NEXUS CORPORATION - UNAUTHORIZED ACCESS IS PROHIBITED     ║
+║  FOR TECHNICAL SUPPORT CONTACT: admin@nexus.corp                  ║
+╚════════════════════════════════════════════════════════════════════╝
+                    </pre>
+                </div>
+                <div class="mt-4 text-xs text-cyber-blue">
+                    > Session will auto-terminate in 15:42:33
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Custom 404 Page (Hidden) -->
+    <div id="secretPage" class="fixed inset-0 bg-terminal-dark z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-terminal-bg border border-cyber-purple p-8 max-w-2xl">
+                <h1 class="text-4xl font-bold text-cyber-magenta mb-4 glitch-hover">
+                    404 - VOID DETECTED
+                </h1>
+                <div class="text-cyber-green mb-6">
+                    > You have discovered the space between worlds<br>
+                    > Few dare to venture here, agent<br>
+                    > Your persistence has been noted...
+                </div>
+                <div class="bg-black p-4 border border-cyber-green text-xs">
+                    <div class="text-cyber-purple mb-2">FINAL_TRANSMISSION:</div>
+                    <div class="text-cyber-blue">
+                        The secret key you seek is hidden in plain sight.<br>
+                        Look for the pattern: N3XU5_K3Y_7734<br>
+                        <span class="text-cyber-magenta">This key unlocks level 7 clearance.</span>
+                    </div>
+                </div>
+                <button onclick="closeSecretPage()" class="mt-4 text-cyber-green hover:text-cyber-magenta">
+                    > Return to terminal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Matrix Rain Effect
+        (function() {
+            const matrixContainer = document.getElementById('matrixRain');
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            
+            function createMatrixChar() {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDelay = Math.random() * 20 + 's';
+                char.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                
+                matrixContainer.appendChild(char);
+                
+                setTimeout(() => {
+                    if (char.parentNode) {
+                        char.parentNode.removeChild(char);
+                    }
+                }, 30000);
+            }
+            
+            // Create initial matrix characters
+            for (let i = 0; i < 50; i++) {
+                setTimeout(createMatrixChar, Math.random() * 5000);
+            }
+            
+            // Continue creating characters
+            setInterval(createMatrixChar, 200);
+        })();
+
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toISOString().replace('T', ' ').slice(0, 19);
+            const timeElement = document.getElementById('currentTime');
+            if (timeElement) {
+                timeElement.textContent = timeString;
+            }
+        }
+        
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Secret page functionality
+        function showSecretPage() {
+            document.getElementById('secretPage').classList.remove('hidden');
+        }
+
+        function closeSecretPage() {
+            document.getElementById('secretPage').classList.add('hidden');
+        }
+
+        // Secret key discovery system
+        let secretSequence = [];
+        const requiredSequence = ['ghost', 'void', 'nexus'];
+        
+        document.addEventListener('click', function(e) {
+            if (e.target.textContent.toLowerCase().includes('ghost_protocol')) {
+                secretSequence.push('ghost');
+            }
+        });
+
+        // Easter egg: Konami code equivalent
+        let konamiSequence = [];
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight'];
+        
+        document.addEventListener('keydown', function(e) {
+            konamiSequence.push(e.code);
+            konamiSequence = konamiSequence.slice(-8);
+            
+            if (konamiSequence.join(',') === konamiCode.join(',')) {
+                showSecretPage();
+                konamiSequence = [];
+            }
+        });
+
+        // Glitch effect on random elements
+        setInterval(() => {
+            const elements = document.querySelectorAll('.glitch-hover');
+            const randomElement = elements[Math.floor(Math.random() * elements.length)];
+            if (randomElement) {
+                randomElement.style.animation = 'glitch 0.3s ease-in-out';
+                setTimeout(() => {
+                    randomElement.style.animation = '';
+                }, 300);
+            }
+        }, 5000);
+
+        // Terminal cursor blink
+        setInterval(() => {
+            const cursors = document.querySelectorAll('.terminal-cursor');
+            cursors.forEach(cursor => {
+                cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
+            });
+        }, 500);
+
+        // TODO: Implement business logic for secret key validation
+        // TODO: Add sound effects for authentic terminal experience
+        // TODO: Implement terminal command processing
+        // TODO: Add user authentication system
+        // TODO: Create database integration for tracking discovery attempts
+        
+        <!-- SECRET_KEY_METHODOLOGY:
+        Step 1: User notices "hidden.exe" in navigation with hover clue
+        Step 2: Source code inspection reveals comment clues
+        Step 3: Konami code (↑↑↓↓←→←→) or clicking on GHOST_PROTOCOL opens secret page
+        Step 4: Final key revealed: N3XU5_K3Y_7734
+        
+        Alternative discovery methods:
+        - Hover over secret elements reveals additional clues
+        - Console commands simulation provides hints
+        - 404 page styling suggests "void between worlds"
+        - ASCII art contains hidden messages in specific configurations
+        -->
+    </script>
+</body>
+</html>
