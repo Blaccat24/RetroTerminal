@@ -1,6 +1,6 @@
 # Overview
 
-This is a cyberpunk-themed interactive web application called "Neon City" that combines mystery-solving gameplay with retro-futuristic aesthetics. The application features a React frontend with a cyberpunk visual design, interactive elements for discovering hidden fragments, and terminal-style interfaces. It's built as a full-stack application with Express.js backend support and includes puzzle-solving mechanics where users can explore a digital cityscape to uncover secrets.
+This is a cyberpunk-themed interactive web application called "Neon City" that features a 3-step investigation system for intermediate developers and puzzle enthusiasts. The application combines retro-futuristic aesthetics with educational web development challenges including simple Base64 decoding, DOM inspection, and fragment assembly. It's built as a full-stack application with React frontend, Express.js backend, and includes a user-friendly terminal-based investigation interface that teaches basic browser development tools.
 
 # User Preferences
 
@@ -35,10 +35,12 @@ Preferred communication style: Simple, everyday language.
 - **Migration Support**: Database migration system using Drizzle Kit
 
 ## Interactive Features
-- **Mystery Solving Mechanics**: Hidden fragment discovery system embedded in UI components
-- **Progress Tracking**: State management for tracking discovered secrets and user progress
-- **Dynamic Notifications**: Real-time feedback system for user interactions
-- **Terminal Simulation**: Interactive terminal-style interfaces with command-line aesthetics
+- **3-Step Investigation System**: Simple, educational challenge system teaching web development skills
+- **Progressive Learning**: Step-by-step progression with clear guidance and feedback
+- **Interactive Visual Effects**: Matrix rain animations and cyberpunk aesthetics
+- **Terminal Command Interface**: User-friendly command system with helpful error messages
+- **Browser Tools Education**: Teaches practical usage of F12 developer tools
+- **No Time Pressure**: Relaxed environment for learning and exploration
 
 # External Dependencies
 

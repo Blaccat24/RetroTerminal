@@ -122,6 +122,100 @@
       linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
     background-size: 50px 50px;
   }
+
+  /* Advanced Hacking System Animations */
+  @keyframes glow {
+    0%, 100% { 
+      box-shadow: 0 0 20px rgba(255, 255, 0, 0.3), 0 0 30px rgba(255, 255, 0, 0.2), 0 0 40px rgba(255, 255, 0, 0.1); 
+    }
+    50% { 
+      box-shadow: 0 0 30px rgba(255, 255, 0, 0.6), 0 0 40px rgba(255, 255, 0, 0.4), 0 0 60px rgba(255, 255, 0, 0.3); 
+    }
+  }
+
+  @keyframes matrix-rain {
+    0% { 
+      transform: translateY(-100vh); 
+      opacity: 0; 
+    }
+    10% { 
+      opacity: 1; 
+    }
+    90% { 
+      opacity: 1; 
+    }
+    100% { 
+      transform: translateY(100vh); 
+      opacity: 0; 
+    }
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  @keyframes cyber-pulse {
+    0% { 
+      box-shadow: 0 0 5px var(--neon-cyan); 
+      transform: scale(1);
+    }
+    50% { 
+      box-shadow: 0 0 20px var(--neon-cyan), 0 0 30px var(--neon-cyan); 
+      transform: scale(1.05);
+    }
+    100% { 
+      box-shadow: 0 0 5px var(--neon-cyan); 
+      transform: scale(1);
+    }
+  }
+
+  .animate-matrix {
+    animation: matrix-rain 3s linear infinite;
+  }
+
+  .animate-cyber-pulse {
+    animation: cyber-pulse 2s ease-in-out infinite;
+  }
+
+  .cyber-terminal:hover {
+    animation: cyber-pulse 1.5s ease-in-out infinite;
+  }
+
+  /* Matrix Rain Background Effect */
+  .matrix-rain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: 
+      linear-gradient(180deg, transparent 0%, rgba(0, 255, 0, 0.03) 50%, transparent 100%),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 98px,
+        rgba(0, 255, 0, 0.05) 100px
+      );
+    animation: matrix-rain 8s linear infinite;
+  }
+
+  /* Steganography visual effects */
+  .steganography-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0.1;
+    background: 
+      radial-gradient(circle at 20% 30%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(0, 255, 255, 0.1) 0%, transparent 50%);
+    animation: flicker 4s ease-in-out infinite;
+  }
   
   /* Scanlines effect */
   .scanlines {

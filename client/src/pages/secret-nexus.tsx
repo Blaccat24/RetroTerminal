@@ -5,7 +5,7 @@ export default function SecretNexus() {
   const [typedText, setTypedText] = useState('');
   const [showAscii, setShowAscii] = useState(false);
   
-  const message = 'NEURAL FRAGMENT DETECTED... SECOND PIECE IDENTIFIED: _C1TY';
+  const message = 'STEP 1 COMPLETE... INVESTIGATION CONTINUING...';
 
   useEffect(() => {
     let index = 0;
@@ -67,37 +67,37 @@ export default function SecretNexus() {
 
         <div className="space-y-4 mb-8">
           <div className="border border-cyan-400 p-6 bg-black/50 rounded">
-            <h2 className="text-xl text-magenta-400 mb-4">FRAGMENT ANALYSIS</h2>
+            <h2 className="text-xl text-magenta-400 mb-4">STEP 1 ANALYSIS</h2>
             <div className="space-y-2 text-sm">
-              <div>{'>'} Fragment Location: Building 3 - Central Tower</div>
-              <div>{'>'} Fragment Type: Neural Core Identifier</div>
-              <div>{'>'} Fragment Content: <span className="text-yellow-400">_C1TY</span></div>
-              <div>{'>'} Status: <span className="text-green-400">ACQUIRED</span></div>
+              <div>{'>'} Challenge Type: Base64 Message Decoding</div>
+              <div>{'>'} Decoded Fragment: CYB3R_MA</div>
+              <div>{'>'} Status: <span className="text-green-400">COMPLETED</span></div>
+              <div>{'>'} Next Step: <span className="text-yellow-400">Find Hidden DOM Element</span></div>
             </div>
           </div>
 
           <div className="border border-green-400 p-6 bg-black/50 rounded">
             <h2 className="text-xl text-green-400 mb-4">INVESTIGATOR NOTES</h2>
             <div className="space-y-2 text-sm">
-              <div>• This fragment represents the core city identifier</div>
-              <div>• Combine with other neural fragments for complete access key</div>
-              <div>• Next target: Data Fortress (Building 5)</div>
-              <div>• Recommendation: Monitor network traffic during final scan</div>
+              <div>• Successfully decoded Base64 console message</div>
+              <div>• First key fragment obtained</div>
+              <div>• Next step: DOM inspection required</div>
+              <div>• Look for data-secret attribute in hidden elements</div>
             </div>
           </div>
         </div>
 
-        {/* Hidden ASCII Art Clue */}
+        {/* Step Progression Clue */}
         <div className="border border-purple-400 p-4 bg-purple-900/20 rounded mb-8">
-          <h3 className="text-purple-400 mb-2">ENCRYPTED MESSAGE</h3>
+          <h3 className="text-purple-400 mb-2">STEP 2 HINT</h3>
           <pre className="text-xs text-purple-300" data-testid="encrypted-clue">
-{`01001000 01101001 01100100 01100100 01100101 01101110
-01110010 01101111 01110101 01110100 01100101 00111010
-00101111 01101101 01100001 01110100 01110010 01101001
-01111000 00101101 01100011 01101111 01110010 01100101`}
+{`01000100 01001111 01001101 00100000 01101001 01101110
+01110011 01110000 01100101 01100011 01110100 01101001
+01101111 01101110 00100000 01110010 01100101 01110001
+01110101 01101001 01110010 01100101 01100100 00100000`}
           </pre>
           <div className="text-xs text-gray-500 mt-2">
-            Hint: Binary to ASCII conversion reveals hidden path
+            Hint: Binary message tells you what to do next
           </div>
         </div>
 

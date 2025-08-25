@@ -1,35 +1,113 @@
 import { useState, useEffect } from 'react';
 
 export default function CityscapeSection() {
-  const [discoveredFragments, setDiscoveredFragments] = useState<string[]>([]);
-  const [progress, setProgress] = useState(0);
+  const [hackingStep, setHackingStep] = useState(0);
+  const [discoveredClues, setDiscoveredClues] = useState<string[]>([]);
   const [showSecretPanel, setShowSecretPanel] = useState(false);
+  const [activeInvestigation, setActiveInvestigation] = useState('');
 
-  const handleBuildingClick = (buildingNum: string) => {
-    // Step 1: Requires specific sequence - click buildings in order 1, 3, 5
-    const expectedSequence = ['1', '3', '5'];
-    const currentIndex = discoveredFragments.length;
+  const handleInvestigationStart = () => {
+    // Force alert first to confirm click worked
+    alert('SECRET KEY HUNT STARTED! Check console now!');
     
-    if (buildingNum === expectedSequence[currentIndex] && currentIndex < 3) {
-      setDiscoveredFragments(prev => [...prev, buildingNum]);
-      setProgress(prev => prev + 1);
+    // Clear and log immediately
+    console.clear();
+    console.log('🔐 SECRET KEY HUNT STARTED!');
+    console.log('================================');
+    console.log('STEP 1: SECRET CODE FOUND!');
+    console.log('================================');
+    console.log('');
+    console.log('YOUR SECRET CODE IS: Q1lCM1JfTUE=');
+    console.log('');
+    console.log('HINT: This is Base64 encoding. Decode it!');
+    console.log('Then type: step1_solved()');
+    console.log('');
+    console.log('================================');
+    
+    // Also use styled logs
+    setTimeout(() => {
+      console.log('%c🔐 SECRET KEY HUNT STARTED!', 'color: #00ff00; font-family: monospace; font-size: 20px; font-weight: bold; background: black; padding: 10px;');
+      console.log('%cYour secret code is: Q1lCM1JfTUE=', 'color: #ff00ff; font-family: monospace; font-size: 24px; font-weight: bold; background: yellow; color: black; padding: 5px;');
+      console.log('%cThen type in console: step1_solved()', 'color: #ffff00; font-family: monospace; font-size: 16px; background: red; padding: 5px;');
+    }, 100);
+    
+    setActiveInvestigation('STEP_1_DECODE');
+    setHackingStep(1);
+    showNotification('🔍 Step 1: Find the secret code in console!');
+  };
+
+  const handleStep1Solved = () => {
+    if (hackingStep === 1) {
+      setHackingStep(2);
+      setDiscoveredClues(prev => [...prev, 'STEP_1_COMPLETE']);
+      showNotification('✅ Step 2: Find the hidden element');
       
-      // Step-specific notifications
-      if (currentIndex === 0) {
-        showNotification(`First clue found! Look for the next beacon...`);
-      } else if (currentIndex === 1) {
-        showNotification(`Second fragment acquired! One more remains...`);
-      } else if (currentIndex === 2) {
-        showNotification(`Final piece discovered! Check the terminal for assembly...`);
-      }
-    } else if (!expectedSequence.includes(buildingNum)) {
-      showNotification(`This building holds no secrets...`);
-    } else if (discoveredFragments.includes(buildingNum)) {
-      showNotification(`Already scanned this location.`);
-    } else {
-      showNotification(`Wrong sequence. Look for the starting point...`);
+      // Step 2: Add hidden DOM element
+      const hiddenDiv = document.createElement('div');
+      hiddenDiv.id = 'secret-clue';
+      hiddenDiv.setAttribute('data-secret', 'TR1X_20');
+      hiddenDiv.style.position = 'absolute';
+      hiddenDiv.style.top = '0';
+      hiddenDiv.style.left = '0';
+      hiddenDiv.style.opacity = '0';
+      hiddenDiv.innerHTML = 'SECOND_FRAGMENT: TR1X_20';
+      document.body.appendChild(hiddenDiv);
+      
+      console.log('');
+      console.log('%c' + '='.repeat(50), 'color: #00ff00; font-family: monospace; font-size: 16px;');
+      console.log('%cSTEP 2: FIND THE HIDDEN ELEMENT!', 'color: #ffff00; font-family: monospace; font-size: 18px; font-weight: bold;');
+      console.log('%c' + '='.repeat(50), 'color: #00ff00; font-family: monospace; font-size: 16px;');
+      console.log('');
+      console.log('%cA hidden element was just added to the page!', 'color: #00ff80; font-family: monospace; font-size: 16px;');
+      console.log('%cPress F12 → Elements tab → Find data-secret attribute', 'color: #ffff00; font-family: monospace; font-size: 16px;');
+      console.log('%cThen type in console: step2_solved()', 'color: #ff8000; font-family: monospace; font-size: 16px; background: red; padding: 5px;');
+      console.log('');
+      console.log('%c' + '='.repeat(50), 'color: #00ff00; font-family: monospace; font-size: 16px;');
     }
   };
+
+  const handleStep2Solved = () => {
+    if (hackingStep === 2) {
+      setHackingStep(3);
+      setDiscoveredClues(prev => [...prev, 'STEP_2_COMPLETE']);
+      showNotification('🏁 Step 3: Final assembly');
+      
+      console.log('');
+      console.log('%c' + '='.repeat(50), 'color: #00ff00; font-family: monospace; font-size: 16px;');
+      console.log('%cSTEP 3: PUT THE PIECES TOGETHER!', 'color: #ffff00; font-family: monospace; font-size: 18px; font-weight: bold;');
+      console.log('%c' + '='.repeat(50), 'color: #00ff00; font-family: monospace; font-size: 16px;');
+      console.log('');
+      console.log('%cYou found these pieces:', 'color: #ff0080; font-family: monospace; font-size: 16px;');
+      console.log('%cPiece 1: CYB3R_MA (from decoding)', 'color: #00ff80; font-family: monospace; font-size: 16px;');
+      console.log('%cPiece 2: TR1X_20 (from hidden element)', 'color: #00ff80; font-family: monospace; font-size: 16px;');
+      console.log('%cPiece 3: 25 (bonus piece!)', 'color: #00ff80; font-family: monospace; font-size: 16px;');
+      console.log('');
+      console.log('%cPut them together: CYB3R_MA + TR1X_20 + 25 = ?', 'color: #ffff00; font-family: monospace; font-size: 16px; font-weight: bold;');
+      console.log('%cThen type in console: step3_solved()', 'color: #ff8000; font-family: monospace; font-size: 16px; background: red; padding: 5px;');
+      console.log('');
+      console.log('%c' + '='.repeat(50), 'color: #00ff00; font-family: monospace; font-size: 16px;');
+    }
+  };
+
+  const handleStep3Solved = () => {
+    if (hackingStep === 3) {
+      setDiscoveredClues(prev => [...prev, 'INVESTIGATION_COMPLETE']);
+      setShowSecretPanel(true);
+      
+      console.log('');
+      console.log('%c' + '★'.repeat(50), 'color: #ffff00; font-family: monospace; font-size: 16px;');
+      console.log('%c🏆 SUCCESS! SECRET KEY FOUND! 🏆', 'color: #00ff00; font-family: monospace; font-size: 20px; font-weight: bold; background: black; padding: 10px;');
+      console.log('%c' + '★'.repeat(50), 'color: #ffff00; font-family: monospace; font-size: 16px;');
+      console.log('');
+      console.log('%cTHE SECRET KEY IS:', 'color: #ff00ff; font-family: monospace; font-size: 18px; font-weight: bold;');
+      console.log('%cCYB3R_M4TR1X_2025', 'color: #ffff00; font-family: monospace; font-size: 24px; font-weight: bold; background: green; color: black; padding: 10px;');
+      console.log('');
+      console.log('%c🎉 DEMO COMPLETE! WELL DONE! 🎉', 'color: #ff00ff; font-family: monospace; font-size: 18px; font-weight: bold;');
+      console.log('%c' + '★'.repeat(50), 'color: #ffff00; font-family: monospace; font-size: 16px;');
+      showNotification('🏆 DEMO COMPLETE! Secret Key: CYB3R_M4TR1X_2025');
+    }
+  };
+
 
   const showNotification = (message: string) => {
     const notification = document.createElement('div');
@@ -43,10 +121,31 @@ export default function CityscapeSection() {
   };
 
   useEffect(() => {
-    if (progress === 3) {
-      setShowSecretPanel(true);
-    }
-  }, [progress]);
+    // Add keyboard shortcuts for quick testing
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'H') {
+        if (hackingStep === 1) handleStep1Solved();
+        else if (hackingStep === 2) handleStep2Solved();
+        else if (hackingStep === 3) handleStep3Solved();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [hackingStep]);
+
+  // Global functions for terminal integration and step tracking
+  useEffect(() => {
+    (window as any).step1_solved = handleStep1Solved;
+    (window as any).step2_solved = handleStep2Solved;
+    (window as any).step3_solved = handleStep3Solved;
+    (window as any).hackingFunctions = {
+      step1Solved: handleStep1Solved,
+      step2Solved: handleStep2Solved,
+      step3Solved: handleStep3Solved
+    };
+    (window as any).currentHackingStep = hackingStep;
+  }, [hackingStep]);
 
   return (
     <section id="explore" className="min-h-screen relative overflow-hidden">
@@ -55,154 +154,148 @@ export default function CityscapeSection() {
       {/* Grid Background */}
       <div className="absolute inset-0 grid-overlay opacity-30"></div>
       
-      {/* City Buildings */}
-      <div className="absolute bottom-0 w-full h-96 flex items-end justify-center space-x-2 px-4">
+      {/* Central Investigation Hub */}
+      <div className="absolute bottom-0 w-full h-96 flex items-center justify-center">
         
-        {/* Building 1 - Start here: Look for the data-clue attribute */}
-        {/* SECRET_CLUE_1: Inspect this HTML comment. The path begins with N30N */}
+        {/* Main Hacking Terminal */}
         <div 
-          className="building bg-gradient-to-t from-indigo-400/80 to-indigo-300/40 w-16 h-32 cursor-pointer hover:shadow-lg hover:shadow-cyan-400/50 transition-all duration-300" 
-          data-building="1"
-          data-clue="FIRST_BEACON"
-          data-fragment="N30N"
-          data-testid="building-1"
-          title="Click to scan for neural fragments - inspect source for clues"
-          style={{clipPath: 'polygon(0% 100%, 0% 20%, 15% 0%, 85% 0%, 100% 20%, 100% 100%)'}}
-          onClick={() => handleBuildingClick('1')}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-10px) scale(1.05)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0) scale(1)';
-          }}
-        />
-        
-        {/* Building 2 - Decoy */}
-        <div 
-          className="building bg-gradient-to-t from-purple-500/80 to-purple-400/40 w-20 h-40 cursor-pointer" 
-          data-building="2"
-          data-testid="building-2"
-          title="Scanning... no neural activity detected"
-          style={{clipPath: 'polygon(0% 100%, 0% 0%, 100% 0%, 100% 100%)'}}
-          onClick={() => handleBuildingClick('2')}
-        />
-        
-        {/* Building 3 - Central tower: Second in sequence, check console.log output */}
-        {/* HIDDEN_PATH: /secret-nexus - Visit this route for additional clues */}
-        <div 
-          className="building bg-gradient-to-t from-violet-600/80 to-violet-500/40 w-24 h-56 relative cursor-pointer hover:shadow-lg hover:shadow-purple-400/50 transition-all duration-300" 
-          data-building="3"
-          data-neural-core="CENTRAL_NEXUS"
-          data-route="/secret-nexus"
-          data-testid="building-3"
-          title="Central command tower - neural activity detected"
-          style={{clipPath: 'polygon(0% 100%, 0% 10%, 20% 0%, 80% 0%, 100% 10%, 100% 100%)'}}
-          onClick={() => {
-            console.log('NEURAL_FRAGMENT_2: _C1TY_CORE');
-            console.log('🔍 INVESTIGATOR TIP: Check data-route attribute for hidden path');
-            handleBuildingClick('3');
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-10px) scale(1.05)';
-            // Show hidden ASCII overlay on hover
-            const overlay = document.createElement('div');
-            overlay.className = 'absolute inset-0 bg-black/80 flex items-center justify-center text-green-400 text-xs font-mono pointer-events-none';
-            overlay.innerHTML = '<pre>███<br/>█▓█<br/>███</pre>';
-            e.currentTarget.appendChild(overlay);
-            overlay.id = 'hover-overlay-3';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0) scale(1)';
-            const overlay = document.getElementById('hover-overlay-3');
-            if (overlay) overlay.remove();
+          className="cyber-terminal bg-black/90 neon-border rounded-lg p-8 cursor-pointer hover:neon-box-glow transition-all duration-300"
+          data-testid="cyber-terminal"
+          onClick={hackingStep === 0 ? handleInvestigationStart : undefined}
+          style={{
+            minWidth: '400px',
+            minHeight: '250px',
+            border: '2px solid #00ffff',
+            boxShadow: '0 0 20px rgba(0, 255, 255, 0.3)',
           }}
         >
-          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-cyan-400 animate-pulse" data-testid="tower-beacon"></div>
-        </div>
-        
-        {/* Building 4 - Decoy */}
-        <div 
-          className="building bg-gradient-to-t from-blue-500/80 to-blue-400/40 w-18 h-36 cursor-pointer" 
-          data-building="4"
-          data-testid="building-4"
-          title="Residential block - no fragments detected"
-          style={{clipPath: 'polygon(0% 100%, 0% 30%, 30% 0%, 70% 0%, 100% 30%, 100% 100%)'}}
-          onClick={() => handleBuildingClick('4')}
-        />
-        
-        {/* Building 5 - Final piece: Check network tab for hidden request */}
-        {/* FINAL_SEQUENCE: The complete key assembles as N30N_C1TY_K3Y */}
-        <div 
-          className="building bg-gradient-to-t from-fuchsia-500/80 to-fuchsia-400/40 w-16 h-44 cursor-pointer hover:shadow-lg hover:shadow-pink-400/50 transition-all duration-300" 
-          data-building="5"
-          data-final-key="ENCRYPTED"
-          data-unlock="K3Y"
-          data-testid="building-5"
-          title="Data fortress - maximum security protocol"
-          style={{clipPath: 'polygon(0% 100%, 0% 0%, 100% 0%, 100% 100%)'}}
-          onClick={() => {
-            // Step 2: Hidden network request reveals final fragment
-            fetch('data:text/plain;base64,RklOQUxfRlJBR01FTlQ6IF9LM1k=')
-              .then(r => r.text())
-              .then(data => {
-                console.log('Decoded fragment:', atob(data.split(',')[1]));
-                console.log('🎯 SECRET ROUTE UNLOCKED: /matrix-core');
-              });
-            handleBuildingClick('5');
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-10px) scale(1.05)';
-            // Matrix rain effect on hover
-            const overlay = document.createElement('div');
-            overlay.className = 'absolute inset-0 bg-black/80 overflow-hidden pointer-events-none';
-            overlay.innerHTML = `
-              <div class="text-green-400 text-xs font-mono animate-matrix absolute" style="left: 20%; animation-delay: 0s;">1</div>
-              <div class="text-green-400 text-xs font-mono animate-matrix absolute" style="left: 50%; animation-delay: 0.5s;">0</div>
-              <div class="text-green-400 text-xs font-mono animate-matrix absolute" style="left: 80%; animation-delay: 1s;">1</div>
-            `;
-            e.currentTarget.appendChild(overlay);
-            overlay.id = 'hover-overlay-5';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0) scale(1)';
-            const overlay = document.getElementById('hover-overlay-5');
-            if (overlay) overlay.remove();
-          }}
-        />
-      </div>
-      
-      {/* Secret Panel */}
-      <div 
-        className={`secret-panel absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/90 neon-border p-8 rounded-lg ${showSecretPanel ? 'revealed' : ''}`}
-        data-testid="secret-panel"
-      >
-        <div className="font-courier text-center">
-          <div className="text-neon-cyan mb-4">
-            <div className="text-2xl mb-2">🔓</div>
-            <p>ACCESS GRANTED</p>
-          </div>
-          <div className="text-neon-green mb-4">
-            <p>SECRET KEY DISCOVERED:</p>
-            <p className="text-xl font-bold" data-testid="secret-key">N30N_C1TY_K3Y</p>
-          </div>
-          <div className="text-gray-400 text-sm">
-            <p>CONGRATULATIONS, CYBER DETECTIVE</p>
-            <p>You've unlocked the hidden protocol</p>
+          <div className="font-courier text-center space-y-4">
+            {hackingStep === 0 && (
+              <>
+                <div className="text-neon-cyan text-2xl mb-4 animate-pulse">
+                  🔍 SECRET KEY HUNT
+                </div>
+                <div className="text-green-400 text-lg animate-pulse font-bold">
+                  CLICK HERE TO START THE HUNT!
+                </div>
+                <div className="text-gray-400 text-sm space-y-2">
+                  <p>🎯 3 Easy Steps to Find the Secret Key</p>
+                  <p>• Step 1: Decode a Base64 message (easy!)</p>
+                  <p>• Step 2: Find a hidden HTML element</p>
+                  <p>• Step 3: Put the pieces together</p>
+                  <p className="text-yellow-400 font-bold">📱 IMPORTANT: Open F12 Console NOW!</p>
+                </div>
+              </>
+            )}
+            
+            {hackingStep > 0 && (
+              <>
+                <div className="text-neon-cyan text-xl mb-4">
+                  🔓 INVESTIGATION ACTIVE
+                </div>
+                <div className="text-yellow-400">
+                  STEP {hackingStep}/3 - {activeInvestigation}
+                </div>
+                <div className="text-green-400 text-sm">
+                  Progress: {discoveredClues.length} steps completed
+                </div>
+                <div className="text-gray-400 text-xs mt-4">
+                  {hackingStep < 4 ? 'Check browser console for clues...' : 'Investigation Complete!'}
+                </div>
+              </>
+            )}
           </div>
         </div>
+
+        {/* Background Matrix Effects */}
+        {hackingStep > 0 && (
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="matrix-rain opacity-20"></div>
+          </div>
+        )}
+
       </div>
       
-      {/* Instruction Panel */}
-      <div className="absolute top-10 left-10 bg-black/70 neon-border p-6 rounded-lg max-w-sm" data-testid="instruction-panel">
+      {/* Master Key Revealed Panel */}
+      {showSecretPanel && (
+        <div 
+          className="master-key-panel absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/95 neon-border p-12 rounded-lg animate-pulse-glow z-50"
+          data-testid="master-key-panel"
+          style={{
+            border: '3px solid #ffff00',
+            boxShadow: '0 0 30px rgba(255, 255, 0, 0.5), inset 0 0 30px rgba(255, 255, 0, 0.1)',
+            animation: 'glow 2s ease-in-out infinite alternate',
+          }}
+        >
+          <div className="font-courier text-center space-y-6">
+            <div className="text-yellow-400 text-3xl mb-6">
+              🏆 MASTER HACKER STATUS ACHIEVED
+            </div>
+            <div className="text-neon-green text-2xl mb-4">
+              <p>ULTIMATE SECRET KEY UNLOCKED:</p>
+              <p className="text-3xl font-bold text-yellow-400" data-testid="master-key">CYB3R_M4TR1X_2025</p>
+            </div>
+            <div className="text-cyan-400 space-y-2">
+              <p>✓ Step 1: Message decoded</p>
+              <p>✓ Step 2: Hidden element found</p>
+              <p>✓ Step 3: Key assembled</p>
+            </div>
+            <div className="text-gray-300 text-sm mt-6">
+              <p>CYBER INVESTIGATION COMPLETE</p>
+              <p>You successfully found the master key!</p>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Simple Investigation Panel */}
+      <div className="absolute top-10 left-10 bg-black/80 neon-border p-6 rounded-lg max-w-md" data-testid="investigation-panel">
         <h3 className="text-neon-cyan font-bold mb-3 font-orbitron">
-          🔍 INVESTIGATION MODE
+          🔍 CYBER INVESTIGATION
         </h3>
         <div className="font-courier text-sm text-gray-300 space-y-2">
-          <p>{'>'} STEP 1: Click buildings to scan for neural fragments</p>
-          <p>{'>'} STEP 2: Check browser dev tools (Console/Network)</p>
-          <p>{'>'} STEP 3: Decode and assemble in terminal</p>
-          <p className="text-neon-green">{'>'} Neural scans: <span data-testid="progress-counter">{progress}/3</span></p>
-          <p className="text-xs text-gray-500 mt-2">💡 Hint: Start with the shortest building</p>
+          <p className="text-yellow-400">Current Step: {hackingStep}/3</p>
+          
+          {hackingStep === 0 && (
+            <>
+              <p>{'>'} Click terminal to begin</p>
+              <p>{'>'} 3 simple steps to solve</p>
+              <p>{'>'} Intermediate difficulty</p>
+            </>
+          )}
+          
+          {hackingStep === 1 && (
+            <>
+              <p className="text-green-400">{'>'} STEP 1: Decode the Base64 message</p>
+              <p>{'>'} Look in console for: Q1lCM1JfTUE=</p>
+              <p>{'>'} Decode it, then type: step1_solved()</p>
+              <p className="text-yellow-400">{'>'} Hint: Use an online Base64 decoder!</p>
+            </>
+          )}
+          
+          {hackingStep === 2 && (
+            <>
+              <p className="text-purple-400">{'>'} STEP 2: Find hidden HTML element</p>
+              <p>{'>'} Press F12 → Elements tab</p>
+              <p>{'>'} Find element with data-secret attribute</p>
+              <p>{'>'} Then type: step2_solved</p>
+            </>
+          )}
+          
+          {hackingStep === 3 && (
+            <>
+              <p className="text-pink-400">{'>'} STEP 3: Put pieces together</p>
+              <p>{'>'} Combine: Part1 + Part2 + 25</p>
+              <p>{'>'} Then type: step3_solved</p>
+            </>
+          )}
+          
+          <div className="text-xs text-gray-500 mt-4 space-y-1">
+            <p>💡 This is beginner-friendly!</p>
+            <p>🔍 Use F12 console and elements</p>
+            <p>🎯 No time pressure, take your time</p>
+            <p>🚀 Secret key: CYB3R_M4TR1X_2025</p>
+          </div>
         </div>
       </div>
     </section>

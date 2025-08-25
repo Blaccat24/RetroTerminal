@@ -2,20 +2,15 @@ import { useState, useRef, useEffect } from 'react';
 
 export default function TerminalSection() {
   const [commandHistory, setCommandHistory] = useState<string[]>([
-    'root@neoncity:~$ whoami',
-    'cyber_detective',
-    'root@neoncity:~$ ls -la /secrets/',
-    'total 3',
-    '-rw-r--r-- 1 root root 42 Nov 15 23:59 fragment_01.txt',
-    '-rw-r--r-- 1 root root 42 Nov 15 23:59 fragment_02.txt',
-    '-rw-r--r-- 1 root root 42 Nov 15 23:59 fragment_03.txt',
-    'root@neoncity:~$ cat /secrets/*.txt',
-    'Fragment 1: Found in Building #1 source code',
-    'Fragment 2: Discovered in Central Tower',
-    'Fragment 3: Located in Building #5 comments',
-    'root@neoncity:~$ combine_fragments',
-    'ASSEMBLING SECRET KEY...',
-    '🔑 MASTER KEY REVEALED: N30N_C1TY_K3Y 🔑'
+    'root@cybersec:~$ whoami',
+    'elite_cyber_detective',
+    'root@cybersec:~$ system_status',
+    '🔐 ADVANCED INVESTIGATION TERMINAL ONLINE',
+    '🕵️ Multi-phase security analysis ready',
+    '⚠️  WARNING: Advanced hacking skills required',
+    '',
+    '💡 Type "help" for investigation commands',
+    '🔍 Click main terminal above to begin investigation'
   ]);
   const [currentCommand, setCurrentCommand] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -28,61 +23,96 @@ export default function TerminalSection() {
 
   const handleCommand = (command: string) => {
     const cmd = command.trim().toLowerCase();
-    const newHistory = [...commandHistory, `root@neoncity:~$ ${command}`];
+    const newHistory = [...commandHistory, `root@cybersec:~$ ${command}`];
+    
+    const hackingFunctions = (window as any).hackingFunctions;
     
     switch (cmd) {
       case 'help':
-        newHistory.push('Available commands: help, whoami, ls, cat, clear, matrix, hack, explore, decode, fragments');
+        newHistory.push('🔍 CYBER INVESTIGATION TERMINAL - 3 Simple Steps:');
+        newHistory.push('');
+        newHistory.push('Basic Commands:');
+        newHistory.push('  help           - Show this command reference');
+        newHistory.push('  status         - Check investigation progress');
+        newHistory.push('  clear          - Clear terminal buffer');
+        newHistory.push('');
+        newHistory.push('Investigation Commands:');
+        newHistory.push('  step1_solved   - Complete Step 1 (decode message)');
+        newHistory.push('  step2_solved   - Complete Step 2 (find DOM element)');
+        newHistory.push('  step3_solved   - Complete Step 3 (assemble key)');
+        newHistory.push('');
+        newHistory.push('🎯 Follow the steps in order to find the master key!');
         break;
-      case 'whoami':
-        newHistory.push('cyber_detective');
+        
+      case 'status':
+        const currentStep = (window as any).currentHackingStep || 0;
+        newHistory.push('🔍 INVESTIGATION STATUS:');
+        newHistory.push('');
+        newHistory.push(`Current Step: ${currentStep}/3`);
+        newHistory.push(`Step 1 - Decode Message: ${currentStep >= 1 ? '✅ COMPLETE' : '🔄 ACTIVE'}`);
+        newHistory.push(`Step 2 - Find Element: ${currentStep >= 2 ? '✅ COMPLETE' : '⏳ WAITING'}`);
+        newHistory.push(`Step 3 - Assemble Key: ${currentStep >= 3 ? '✅ COMPLETE' : '⏳ WAITING'}`);
+        newHistory.push('');
+        newHistory.push('💡 Check browser console for clues');
         break;
-      case 'ls':
-        newHistory.push('fragments.db  matrix.exe  secrets.txt  cyber_protocols.sh');
+        
+      case 'step1_solved':
+        if (hackingFunctions?.step1Solved) {
+          hackingFunctions.step1Solved();
+          newHistory.push('🔓 STEP 1 COMPLETE:');
+          newHistory.push('');
+          newHistory.push('✅ Base64 decoded successfully');
+          newHistory.push('✅ Fragment 1: CYB3R_MA');
+          newHistory.push('');
+          newHistory.push('🔍 Step 2 activated - find hidden DOM element');
+        } else {
+          newHistory.push('❌ STEP 1 NOT READY');
+          newHistory.push('');
+          newHistory.push('Click the terminal first to start investigation');
+          newHistory.push('Then decode: Q1lCM1JfTUE=');
+        }
         break;
-      case 'cat secrets.txt':
-        newHistory.push('SECRET_KEY: N30N_C1TY_K3Y');
-        newHistory.push('ACCESS_LEVEL: CYBERPUNK_MASTER');
+        
+      case 'step2_solved':
+        if (hackingFunctions?.step2Solved) {
+          hackingFunctions.step2Solved();
+          newHistory.push('🔍 STEP 2 COMPLETE:');
+          newHistory.push('');
+          newHistory.push('✅ Hidden element found');
+          newHistory.push('✅ Fragment 2: TR1X_20');
+          newHistory.push('');
+          newHistory.push('🏁 Final step ready - assemble the key');
+        } else {
+          newHistory.push('❌ STEP 2 NOT READY');
+          newHistory.push('Complete Step 1 first');
+        }
         break;
-      case 'matrix':
-        newHistory.push('Entering the matrix...');
-        newHistory.push('Reality.exe has stopped working');
-        newHistory.push('Welcome to the desert of the real');
+        
+      case 'step3_solved':
+        if (hackingFunctions?.step3Solved) {
+          hackingFunctions.step3Solved();
+          newHistory.push('🏆 INVESTIGATION COMPLETE:');
+          newHistory.push('');
+          newHistory.push('✅ All fragments assembled');
+          newHistory.push('✅ Master Key: CYB3R_M4TR1X_2025');
+          newHistory.push('');
+          newHistory.push('🎉 SUCCESS! You found the secret!');
+        } else {
+          newHistory.push('❌ STEP 3 NOT READY');
+          newHistory.push('Complete Steps 1 & 2 first');
+        }
         break;
-      case 'hack':
-        newHistory.push('Initiating hack sequence...');
-        newHistory.push('Bypassing firewall... [OK]');
-        newHistory.push('Accessing mainframe... [OK]');
-        newHistory.push('You are now connected to the grid');
-        break;
-      case 'explore':
-        newHistory.push('Scanning city grid for hidden fragments...');
-        newHistory.push('Buildings detected: 5');
-        newHistory.push('Tip: Click buildings in correct sequence to discover secrets');
-        break;
-      case 'decode':
-        newHistory.push('Initiating neural fragment decoder...');
-        newHistory.push('Searching for collected fragments...');
-        newHistory.push('Fragment 1: FIRST_BEACON (from data-clue)');
-        newHistory.push('Fragment 2: _C1TY_CORE (from console log)');
-        newHistory.push('Fragment 3: _K3Y (from network request)');
-        newHistory.push('Assembling fragments: N30N + _C1TY + _K3Y = N30N_C1TY_K3Y');
-        newHistory.push('🔓 MASTER ACCESS GRANTED 🔓');
-        break;
-      case 'fragments':
-        newHistory.push('Neural fragment collection status:');
-        newHistory.push('• Building 1: data-clue="FIRST_BEACON"');
-        newHistory.push('• Building 3: console.log output');
-        newHistory.push('• Building 5: base64 network request');
-        newHistory.push('Use "decode" command to assemble fragments');
-        break;
+        
       case 'clear':
         setCommandHistory([]);
         setCurrentCommand('');
         return;
+        
       default:
-        newHistory.push(`Command not found: ${command}`);
+        newHistory.push(`❌ UNKNOWN COMMAND: ${cmd}`);
+        newHistory.push('');
         newHistory.push('Type "help" for available commands');
+        newHistory.push('Type "status" for current progress');
     }
     
     setCommandHistory(newHistory);
@@ -116,7 +146,7 @@ export default function TerminalSection() {
               <div className="space-y-1">
                 {commandHistory.map((line, index) => (
                   <div key={index} className={
-                    line.startsWith('root@neoncity:~$') ? 'text-neon-green' :
+                    line.startsWith('root@cybersec:~$') ? 'text-neon-green' :
                     line.includes('Fragment') ? 'text-electric-magenta' :
                     line.includes('MASTER KEY') ? 'text-neon-cyan font-bold' :
                     line.includes('ERROR') || line.includes('Command not found') ? 'text-red-500' :
@@ -128,7 +158,7 @@ export default function TerminalSection() {
                 
                 {/* Interactive Command Line */}
                 <div className="flex items-center mt-4">
-                  <span className="text-neon-green">root@neoncity:~$</span>
+                  <span className="text-neon-green">root@cybersec:~$</span>
                   <input
                     ref={inputRef}
                     type="text"
