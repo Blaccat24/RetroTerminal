@@ -35,6 +35,8 @@ This project demonstrates a practical implementation of a secret discovery syste
 ✅ **Technical Skills**: Browser DevTools mastery, Base64 operations, HTML DOM navigation  
 ✅ **Problem Solving**: Multi-step logical progression, pattern recognition  
 ✅ **Investigation Methods**: Systematic approach to finding hidden information  
+##Demonstration Video 👇🏻
+https://drive.google.com/file/d/1eCG5R_bWMzNUHZTi6Lp0_SwTzNTvdiGE/view?usp=sharing
 
 ## 🏗️ Technical Architecture
 
