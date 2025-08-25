@@ -2,7 +2,6 @@
 
 [![Live Demo](https://img.shields.io/badge/Demo-Live-brightgreen)](https://replit.com/@username/neon-city)
 [![React](https://img.shields.io/badge/React-18+-blue)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5+-blue)](https://www.typescriptlang.org/)
 [![Express](https://img.shields.io/badge/Express-4+-green)](https://expressjs.com/)
 
 ## Overview
