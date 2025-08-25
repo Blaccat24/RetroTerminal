@@ -62,16 +62,14 @@ neon-city/
 ## 🛠️ Technology Stack
 
 ### Frontend
-- **React 18+** - Modern UI library with hooks
-- **TypeScript** - Type-safe JavaScript development
+- **React JS** - Modern UI library with hooks
+- **JavaScript** -  JavaScript development
 - **Tailwind CSS** - Utility-first CSS framework
 - **Vite** - Fast build tool and dev server
-- **Wouter** - Lightweight client-side routing
+
 
 ### Backend
 - **Express.js** - Web application framework for Node.js
-- **TypeScript** - Server-side type safety
-- **Drizzle ORM** - Type-safe database toolkit
 
 ### UI Components
 - **Radix UI** - Accessible component primitives
